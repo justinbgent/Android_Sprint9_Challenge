@@ -2,6 +2,7 @@ package com.example.sprintchallengemap
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -22,10 +23,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private val PERMISSION_REQUEST = 234
+    private var mediaPlayer: MediaPlayer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
+
+        //Setup mediaPlayer
+        mediaPlayer = MediaPlayer.create(this, R.raw.ao_laser)
 
         //Sets the menuBar items I made up
         setSupportActionBar(toolbar)
@@ -50,6 +55,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         when(item.itemId){
             R.id.locate -> { requestLocationPermission() }
             R.id.pin -> {
+                mediaPlayer?.start()
                 val latLng: LatLng = mMap.cameraPosition.target
                 mMap.addMarker(MarkerOptions().position(latLng))
             }
@@ -66,6 +72,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         if (requestCode == PERMISSION_REQUEST){
             moveCameraToUserLocation()
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mediaPlayer?.stop()
+        mediaPlayer = null
     }
 
     private fun requestLocationPermission(){
