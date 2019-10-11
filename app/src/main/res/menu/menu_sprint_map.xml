@@ -12,4 +12,9 @@
         android:id="@+id/pin"
         android:title="Pin"
         app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/clear"
+        android:title="ClearPins"
+        app:showAsAction="always"/>
 </menu>

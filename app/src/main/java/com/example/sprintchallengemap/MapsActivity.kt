@@ -59,6 +59,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 val latLng: LatLng = mMap.cameraPosition.target
                 mMap.addMarker(MarkerOptions().position(latLng))
             }
+            R.id.clear -> { mMap.clear() }
         }
         return super.onOptionsItemSelected(item)
     }
