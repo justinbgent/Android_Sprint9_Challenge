@@ -39,11 +39,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -53,8 +48,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
-            R.id.locate -> {}
-            R.id.pin -> {}
+            R.id.locate -> { requestLocationPermission() }
+            R.id.pin -> {
+                val latLng: LatLng = mMap.cameraPosition.target
+                mMap.addMarker(MarkerOptions().position(latLng))
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -65,20 +63,23 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PERMISSION_REQUEST){
+            moveCameraToUserLocation()
+        }
     }
 
-    fun requestLocationPermission(){
+    private fun requestLocationPermission(){
         ActivityCompat.requestPermissions(this,
             arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
             PERMISSION_REQUEST)
     }
 
-    fun isPermissionGranted(): Boolean{
+    private fun isPermissionGranted(): Boolean{
         return (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
             == PackageManager.PERMISSION_GRANTED)
     }
 
-    fun moveCameraToUserLocation(){
+    private fun moveCameraToUserLocation(){
         if (isPermissionGranted()){
             val locationProvider = LocationServices.getFusedLocationProviderClient(this)
 
